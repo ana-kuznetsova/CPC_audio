@@ -8,6 +8,7 @@ import time
 import tqdm
 import torch
 import soundfile as sf
+import librosa
 from pathlib import Path
 from copy import deepcopy
 from torch.multiprocessing import Pool
@@ -73,7 +74,7 @@ class AudioBatchData(Dataset):
         self.phoneLabelsDict = deepcopy(newPhoneLabels)
         self.loadNextPack()
 
-    def splitSeqTags(self, seqName):
+    def splitSeqTags(seqName):
         path = os.path.normpath(seqName)
         return path.split(os.sep)
 
@@ -278,7 +279,9 @@ def loadFile(data):
 
     # Due to some issues happening when combining torchaudio.load
     # with torch.multiprocessing we use soundfile to load the data
+    #print("DEBUG:", str(fullPath))
     seq = torch.tensor(sf.read(str(fullPath))[0]).float()
+    #seq = torch.tensor(librosa.load(fullPath)[0]).float()
     if len(seq.size()) == 2:
         seq = seq.mean(dim=1)
     return speaker, seqName, seq
@@ -425,8 +428,11 @@ class SameSpeakerSampler(Sampler):
 
 def extractLength(couple):
     speaker, locPath = couple
-    info = torchaudio.info(str(locPath))[0]
-    return info.length
+    #info = torchaudio.info(str(locPath))[0]
+    info = torchaudio.info(str(locPath))
+    #print(info)
+    #return info.length
+    return info.num_frames
 
 
 def findAllSeqs(dirName,
