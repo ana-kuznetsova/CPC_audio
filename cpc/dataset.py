@@ -167,6 +167,7 @@ class AudioBatchData(Dataset):
                 print(f"Index speaker {indexSpeaker}, speaker {speaker}")
                 indexSpeaker += 1
                 self.speakerLabel.append(speakerSize)
+                print(f"speakerLabel {self.speakerLabel}")
             if self.speakers[indexSpeaker] != speaker:
                 raise ValueError(f'{speaker} invalid speaker')
 
