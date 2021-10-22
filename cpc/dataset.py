@@ -104,6 +104,7 @@ class AudioBatchData(Dataset):
 
         self.packageIndex, self.totSize = [], 0
         start, packageSize = 0, 0
+        print("debug: dataset:", allLength)
         for index, length in tqdm.tqdm(enumerate(allLength)):
             packageSize += length
             if packageSize > self.MAX_SIZE_LOADED:
