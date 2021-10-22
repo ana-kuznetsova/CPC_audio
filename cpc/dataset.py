@@ -158,7 +158,7 @@ class AudioBatchData(Dataset):
         tmpData = []
 
         for speaker, seqName, seq in self.nextData:
-            print("DEBUG speaker, seqname:", speaker, seqName)
+            #print("DEBUG speaker, seqname:", speaker, seqName)
             # sometimes some data may be missing
             if self.phoneLabelsDict is not None and seqName not in self.phoneLabelsDict:
                 continue
