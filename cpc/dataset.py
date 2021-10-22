@@ -157,7 +157,7 @@ class AudioBatchData(Dataset):
         tmpData = []
 
         for speaker, seqName, seq in self.nextData:
-
+            print("DEBUG speaker, seqname:", speaker, seqName)
             # sometimes some data may be missing
             if self.phoneLabelsDict is not None and seqName not in self.phoneLabelsDict:
                 continue
@@ -227,7 +227,7 @@ class AudioBatchData(Dataset):
 
     def getBaseSampler(self, type, batchSize, offset):
         if type == "samespeaker":
-            print("DEBUG baseSampler:", self.speakerLabel)
+            #print("DEBUG baseSampler:", self.speakerLabel)
             return SameSpeakerSampler(batchSize, self.speakerLabel,
                                       self.sizeWindow, offset)
         if type == "samesequence":
