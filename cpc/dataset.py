@@ -154,7 +154,7 @@ class AudioBatchData(Dataset):
 
         # To accelerate the process a bit
         #print("Before sorting:", self.nextData)
-        #self.nextData.sort(key=lambda x: (x[0], x[1]))
+        self.nextData.sort(key=lambda x: (x[0], x[1]))
         tmpData = []
 
         for speaker, seqName, seq in self.nextData:
@@ -164,6 +164,7 @@ class AudioBatchData(Dataset):
                 continue
             
             while self.speakers[indexSpeaker] < speaker:
+                print(f"Index speaker {indexSpeaker}, speaker {speaker}")
                 indexSpeaker += 1
                 self.speakerLabel.append(speakerSize)
             if self.speakers[indexSpeaker] != speaker:
