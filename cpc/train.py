@@ -320,7 +320,6 @@ def run(trainDataset,
 
         trainLoader = trainDataset.getDataLoader(batchSize, samplingMode,
                                                 True, numWorkers=0)
-        print("DEBUG run:", trainLoader)
         
         valLoader = valDataset.getDataLoader(batchSize, 'sequential', False,
                                             numWorkers=0)
