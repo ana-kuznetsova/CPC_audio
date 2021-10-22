@@ -73,7 +73,7 @@ class AudioBatchData(Dataset):
         self.phoneLabelsDict = deepcopy(newPhoneLabels)
         self.loadNextPack()
 
-    def splitSeqTags(seqName):
+    def splitSeqTags(self, seqName):
         path = os.path.normpath(seqName)
         return path.split(os.sep)
 
