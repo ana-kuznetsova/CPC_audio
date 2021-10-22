@@ -153,6 +153,7 @@ class AudioBatchData(Dataset):
         indexSpeaker = 0
 
         # To accelerate the process a bit
+        print("Before sorting:", self.nextData)
         self.nextData.sort(key=lambda x: (x[0], x[1]))
         tmpData = []
 
