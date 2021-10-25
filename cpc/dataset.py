@@ -322,7 +322,6 @@ class AudioLoader(object):
         self.nLoop = nLoop
         self.size = size
         self.dataset = dataset
-        print(f"DEBUG: AudioLoader dataset: {self.dataset}")
         self.numWorkers = numWorkers
 
     def __len__(self):
@@ -410,12 +409,12 @@ class DiffSpeakerSampler(Sampler):
 
         order = [(x, torch.randperm(val).tolist())
                  for x, val in enumerate(self.sizeSamplers) if val > 0]
-        random.shuffle(order)
-        print(f"DEBUG: DiffSpeaker:{order}")
+
         # Build Batches
         self.batches = []
         for indexSampler, randperm in order:
             indexStart, sizeSampler = 0, self.sizeSamplers[indexSampler]
+            print(f"DEBUG: sizeSampler {sizeSampler}")
             while indexStart < sizeSampler:
                 indexEnd = min(sizeSampler, indexStart + self.batchSize)
                 locBatch = [self.getIndex(x, indexSampler)
