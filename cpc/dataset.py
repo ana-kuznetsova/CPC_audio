@@ -206,7 +206,6 @@ class AudioBatchData(Dataset):
         outData = self.data[idx:(self.sizeWindow + idx)].view(1, -1)
         labelData = {}
         labelData['speaker'] = torch.tensor(self.getSpeakerLabel(idx), dtype=torch.long)
-        print(f"DEBUG: outData: {outData.shape}, LabelData: {labelData}")
         if self.phoneSize > 0:
             label_phone = torch.tensor(self.getPhonem(idx), dtype=torch.long)
             labelData['phone'] = label_phone
@@ -407,7 +406,7 @@ class SameSpeakerSampler(Sampler):
 
         order = [(x, torch.randperm(val).tolist())
                  for x, val in enumerate(self.sizeSamplers) if val > 0]
-
+        print(f"DEUBG: Order: {order}")
         # Build Batches
         self.batches = []
         for indexSampler, randperm in order:
