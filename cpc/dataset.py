@@ -230,7 +230,7 @@ class AudioBatchData(Dataset):
 
     def getBaseSampler(self, type, batchSize, offset):
         if type == "samespeaker":
-            #print("DEBUG baseSampler:", self.speakerLabel)
+            print("DEBUG baseSampler:", self.speakerLabel)
             return SameSpeakerSampler(batchSize, self.speakerLabel,
                                       self.sizeWindow, offset)
         if type == "samesequence":
@@ -406,7 +406,6 @@ class SameSpeakerSampler(Sampler):
 
         order = [(x, torch.randperm(val).tolist())
                  for x, val in enumerate(self.sizeSamplers) if val > 0]
-        print(f"DEUBG: Order: {order}")
         # Build Batches
         self.batches = []
         for indexSampler, randperm in order:
