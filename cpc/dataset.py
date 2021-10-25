@@ -74,7 +74,7 @@ class AudioBatchData(Dataset):
         self.phoneLabelsDict = deepcopy(newPhoneLabels)
         self.loadNextPack()
 
-    def splitSeqTags(seqName):
+    def splitSeqTags(self, seqName):
         path = os.path.normpath(seqName)
         return path.split(os.sep)
 
@@ -155,7 +155,6 @@ class AudioBatchData(Dataset):
         # To accelerate the process a bit
         #print("Before sorting:", self.nextData)
         self.nextData.sort(key=lambda x: (x[0], x[1]))
-        print(f"Next data {self.nextData}")
         tmpData = []
 
         for speaker, seqName, seq in self.nextData:
@@ -165,10 +164,10 @@ class AudioBatchData(Dataset):
                 continue
             
             while self.speakers[indexSpeaker] < speaker:
-                print(f"Index speaker {indexSpeaker}, speaker {speaker}")
+                #print(f"Index speaker {indexSpeaker}, speaker {speaker}")
                 indexSpeaker += 1
                 self.speakerLabel.append(speakerSize)
-                print(f"speakerLabel {self.speakerLabel}")
+                #print(f"speakerLabel {self.speakerLabel}")
             if self.speakers[indexSpeaker] != speaker:
                 raise ValueError(f'{speaker} invalid speaker')
 
@@ -207,6 +206,7 @@ class AudioBatchData(Dataset):
         outData = self.data[idx:(self.sizeWindow + idx)].view(1, -1)
         labelData = {}
         labelData['speaker'] = torch.tensor(self.getSpeakerLabel(idx), dtype=torch.long)
+        print(f"DEBUG: outData: {outData}, LabelData: {labelData}")
         if self.phoneSize > 0:
             label_phone = torch.tensor(self.getPhonem(idx), dtype=torch.long)
             labelData['phone'] = label_phone
