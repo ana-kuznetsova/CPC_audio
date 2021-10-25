@@ -109,6 +109,7 @@ def trainStep(dataLoader,
         n_examples += batchData.size(0)
         batchData = batchData.cuda(non_blocking=True)
         label = label.cuda(non_blocking=True)
+        print(f"DEBUG trainStep: {batchData, label}")
         c_feature, encoded_data, label = cpcModel(batchData, label)
         allLosses, allAcc, _ = cpcCriterion(c_feature, encoded_data, label, None)
         totLoss = allLosses.sum()
