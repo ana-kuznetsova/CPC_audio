@@ -230,7 +230,6 @@ class AudioBatchData(Dataset):
 
     def getBaseSampler(self, type, batchSize, offset):
         if type == "samespeaker":
-            print("DEBUG baseSampler:", self.speakerLabel)
             return SameSpeakerSampler(batchSize, self.speakerLabel,
                                       self.sizeWindow, offset)
         if type == "samesequence":
