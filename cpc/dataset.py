@@ -416,14 +416,27 @@ class DiffSpeakerSampler(Sampler):
 
         # Build Batches
         self.batches = []
-        '''
+        
         while True:
             locBatch = []
-            indexSampler = random.sample([i for i in range(len(perm_dict.keys()))], 1)
+            indexSampler = random.sample([k for k in perm_dict.keys()], 1)
+            x = random.sample(perm_dict[indexSampler], 1)
+            #Remove x from the list of available permutations
+            perm_dict[indexSampler].remove(x)
+            locBatch.append(self.getIndex(x, indexSampler))
+            if len(perm_dict[indexSampler])==0:
+                del perm_dict[indexSampler]
+
+            if len(locBatch) == self.batchSize:
+                self.batches.append(locBatch)
+                locBatch = []
+            if not bool(perm_dict):
+                break
+
         
-        
-        [97, 118, 45, 14, 15, 80, 62, 3, 103, 1] 130
         '''
+        [97, 118, 45, 14, 15, 80, 62, 3, 103, 1] 130
+        
         for indexSampler, randperm in order:
             indexStart, sizeSampler = 0, self.sizeSamplers[indexSampler]
             while indexStart < sizeSampler:
@@ -434,6 +447,7 @@ class DiffSpeakerSampler(Sampler):
                 print(f"Batches {self.batches}")
                 indexStart = indexEnd
                 self.batches.append(locBatch)
+        '''
         
 
     def __len__(self):
