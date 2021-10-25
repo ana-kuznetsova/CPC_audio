@@ -396,8 +396,6 @@ class DiffSpeakerSampler(Sampler):
         self.batchSize = batchSize
         self.offset = offset
 
-        print(f"DEBUG: {self.samplingIntervals, self.sizeWindow}")
-
         if self.samplingIntervals[0] != 0:
             raise AttributeError("Sampling intervals should start at zero")
 
@@ -415,17 +413,27 @@ class DiffSpeakerSampler(Sampler):
         perm_dict = {}
         for el in order:
             perm_dict[el[0]] = el[1]
-        print(f"Perm dict: {perm_dict}")
+
         # Build Batches
         self.batches = []
+        '''
+        while True:
+            locBatch = []
+            indexSampler = random.sample([i for i in range(len(perm_dict.keys()))], 1)
+        
+        
+        [97, 118, 45, 14, 15, 80, 62, 3, 103, 1] 130
+        '''
         for indexSampler, randperm in order:
             indexStart, sizeSampler = 0, self.sizeSamplers[indexSampler]
             while indexStart < sizeSampler:
                 indexEnd = min(sizeSampler, indexStart + self.batchSize)
                 locBatch = [self.getIndex(x, indexSampler)
                             for x in randperm[indexStart:indexEnd]]
+                print(f"DEBUG: {locBatch[0].shape, locBatch[1].shape}")
                 indexStart = indexEnd
                 self.batches.append(locBatch)
+        
 
     def __len__(self):
         return len(self.batches)
