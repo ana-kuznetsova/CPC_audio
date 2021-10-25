@@ -413,6 +413,7 @@ class DiffSpeakerSampler(Sampler):
         perm_dict = {}
         for el in order:
             perm_dict[el[0]] = el[1]
+            
         # Build Batches
         self.batches = []
         
