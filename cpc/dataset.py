@@ -229,6 +229,9 @@ class AudioBatchData(Dataset):
         return len(self.packageIndex)
 
     def getBaseSampler(self, type, batchSize, offset):
+        if type=='diffspeaker':
+            return DiffSpeakerSampler(batchSize, self.speakerLabel,
+                                      self.sizeWindow, offset)
         if type == "samespeaker":
             return SameSpeakerSampler(batchSize, self.speakerLabel,
                                       self.sizeWindow, offset)
@@ -377,6 +380,46 @@ class SequentialSampler(Sampler):
 
     def __len__(self):
         return self.len
+
+
+class DiffSpeakerSampler(Sampler):
+
+    def __init__(self,
+                 batchSize,
+                 samplingIntervals,
+                 sizeWindow,
+                 offset):
+
+        self.samplingIntervals = samplingIntervals
+        self.sizeWindow = sizeWindow
+        self.batchSize = batchSize
+        self.offset = offset
+
+        if self.samplingIntervals[0] != 0:
+            raise AttributeError("Sampling intervals should start at zero")
+
+        nWindows = len(self.samplingIntervals) - 1
+        self.sizeSamplers = [(self.samplingIntervals[i+1] -
+                              self.samplingIntervals[i]) // self.sizeWindow
+                             for i in range(nWindows)]
+
+        if self.offset > 0:
+            self.sizeSamplers = [max(0, x - 1) for x in self.sizeSamplers]
+
+        order = [(x, torch.randperm(val).tolist())
+                 for x, val in enumerate(self.sizeSamplers) if val > 0]
+        print(f"DEBUG: DiffSpeaker:{order}")
+        # Build Batches
+        self.batches = []
+        for indexSampler, randperm in order:
+            indexStart, sizeSampler = 0, self.sizeSamplers[indexSampler]
+            while indexStart < sizeSampler:
+                indexEnd = min(sizeSampler, indexStart + self.batchSize)
+                locBatch = [self.getIndex(x, indexSampler)
+                            for x in randperm[indexStart:indexEnd]]
+                indexStart = indexEnd
+                self.batches.append(locBatch)
+
 
 
 class SameSpeakerSampler(Sampler):
