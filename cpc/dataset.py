@@ -420,7 +420,7 @@ class DiffSpeakerSampler(Sampler):
         while True:
             locBatch = []
             indexSampler = random.sample([k for k in perm_dict.keys()], 1)
-            x = random.sample(perm_dict[indexSampler], 1)
+            x = random.sample(perm_dict[indexSampler], 1)[0]
             #Remove x from the list of available permutations
             perm_dict[indexSampler].remove(x)
             locBatch.append(self.getIndex(x, indexSampler))
