@@ -425,6 +425,7 @@ class DiffSpeakerSampler(Sampler):
             #Remove x from the list of available permutations
             perm_dict[indexSampler].remove(x)
             locBatch.append(self.getIndex(x, indexSampler))
+            print(locBatch)
             if len(perm_dict[indexSampler])==0:
                 del perm_dict[indexSampler]
 
