@@ -430,7 +430,7 @@ class DiffSpeakerSampler(Sampler):
                 indexEnd = min(sizeSampler, indexStart + self.batchSize)
                 locBatch = [self.getIndex(x, indexSampler)
                             for x in randperm[indexStart:indexEnd]]
-                print(f"DEBUG: {locBatch[0].shape, locBatch[1].shape}")
+                print(f"DEBUG: {locBatch[0], locBatch[1]}")
                 indexStart = indexEnd
                 self.batches.append(locBatch)
         
