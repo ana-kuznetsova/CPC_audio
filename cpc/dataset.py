@@ -407,8 +407,9 @@ class DiffSpeakerSampler(Sampler):
         if self.offset > 0:
             self.sizeSamplers = [max(0, x - 1) for x in self.sizeSamplers]
 
-        order = random.shuffle([(x, torch.randperm(val).tolist())
-                 for x, val in enumerate(self.sizeSamplers) if val > 0])
+        order = [(x, torch.randperm(val).tolist())
+                 for x, val in enumerate(self.sizeSamplers) if val > 0]
+        random.shuffle(order)
         print(f"DEBUG: DiffSpeaker:{order}")
         # Build Batches
         self.batches = []
