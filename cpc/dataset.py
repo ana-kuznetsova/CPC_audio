@@ -415,6 +415,7 @@ class DiffSpeakerSampler(Sampler):
         # Build Batches
         self.batches = []
         for indexSampler, randperm in order:
+            print(f"DEBUG:{indexSampler, randperm}")
             indexStart, sizeSampler = 0, self.sizeSamplers[indexSampler]
             print(f"DEBUG: sizeSampler {sizeSampler}")
             while indexStart < sizeSampler:
