@@ -416,9 +416,9 @@ class DiffSpeakerSampler(Sampler):
 
         # Build Batches
         self.batches = []
+        locBatch = []
         
         while True:
-            locBatch = []
             indexSampler = random.sample([k for k in perm_dict.keys()], 1)[0]
             x = random.sample(perm_dict[indexSampler], 1)[0]
             print(indexSampler, x)
