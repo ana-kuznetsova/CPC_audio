@@ -60,7 +60,7 @@ def set_default_cpc_config(parser):
                        help='Number of epoch to run')
     group.add_argument('--samplingType', type=str, default='samespeaker',
                        choices=['samespeaker', 'uniform',
-                                'samesequence', 'sequential'],
+                                'samesequence', 'sequential', 'diffspeaker'],
                        help='How to sample the negative examples in the '
                        'CPC loss.')
     group.add_argument('--nLevelsPhone', type=int, default=1,
