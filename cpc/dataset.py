@@ -275,7 +275,7 @@ class AudioBatchData(Dataset):
             offset = random.randint(0, self.sizeWindow // 2) \
                 if randomOffset else 0
             return self.getBaseSampler(type, batchSize, offset)
-
+        
         return AudioLoader(self, samplerCall, nLoops, self.loadNextPack,
                            totSize, numWorkers)
 
@@ -322,6 +322,7 @@ class AudioLoader(object):
         self.nLoop = nLoop
         self.size = size
         self.dataset = dataset
+        print(f"DEBUG: AudioLoader dataset: {self.dataset}")
         self.numWorkers = numWorkers
 
     def __len__(self):
