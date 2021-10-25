@@ -406,8 +406,8 @@ class DiffSpeakerSampler(Sampler):
         if self.offset > 0:
             self.sizeSamplers = [max(0, x - 1) for x in self.sizeSamplers]
 
-        order = [(x, torch.randperm(val).tolist())
-                 for x, val in enumerate(self.sizeSamplers) if val > 0]
+        order = torch.randperm([(x, torch.randperm(val).tolist())
+                 for x, val in enumerate(self.sizeSamplers) if val > 0])
         print(f"DEBUG: DiffSpeaker:{order}")
         # Build Batches
         self.batches = []
@@ -419,6 +419,17 @@ class DiffSpeakerSampler(Sampler):
                             for x in randperm[indexStart:indexEnd]]
                 indexStart = indexEnd
                 self.batches.append(locBatch)
+
+    def __len__(self):
+        return len(self.batches)
+
+    def getIndex(self, x, iInterval):
+        return self.offset + x * self.sizeWindow \
+            + self.samplingIntervals[iInterval]
+
+    def __iter__(self):
+        random.shuffle(self.batches)
+        return iter(self.batches)
 
 
 
