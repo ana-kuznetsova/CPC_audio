@@ -396,6 +396,8 @@ class DiffSpeakerSampler(Sampler):
         self.batchSize = batchSize
         self.offset = offset
 
+        print(f"DEBUG: {self.samplingIntervals, self.sizeWindow}")
+
         if self.samplingIntervals[0] != 0:
             raise AttributeError("Sampling intervals should start at zero")
 
