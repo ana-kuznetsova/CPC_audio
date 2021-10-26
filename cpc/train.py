@@ -104,7 +104,7 @@ def trainStep(dataLoader,
     logs, lastlogs = {}, None
     iter = 0
     for step, fulldata in enumerate(dataLoader):
-        print(f"DEBUG fulldata {fulldata}")
+        print(f"DEBUG fulldata {len(fulldata)}")
         batchData, labelData = fulldata
         label = labelData['speaker']
         n_examples += batchData.size(0)
