@@ -285,11 +285,26 @@ def buildFeature(featureMaker, seqPath, strict=False,
             break
         end = min(sizeSeq, start + maxSizeSeq)
         subseq = (seq[:, start:end]).view(1, 1, -1).cuda(device=0)
+        '''
         with torch.no_grad():
-            features = featureMaker((subseq, None))
+            try:
+                features = featureMaker((subseq, None))
+            except RuntimeError:
+                continue
+            #features = featureMaker((subseq, None))
             if seqNorm:
                 features = seqNormalization(features)
         out.append(features.detach().cpu())
+        '''
+        try:
+            with torch.no_grad():
+                features = featureMaker((subseq, None))
+                if seqNorm:
+                    features = seqNormalization(features)
+            out.append(features.detach().cpu())
+        except RuntimeError:
+            start += maxSizeSeq
+            continue
         start += maxSizeSeq
 
     if strict and start < sizeSeq:
