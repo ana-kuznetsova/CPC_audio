@@ -307,7 +307,6 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # sampledData, labelLoss = self.sampleClean(encodedData, windowSize)
         # negatives: BS x Len x NumNegs x D
         sampledNegs = self.sampleClean(encodedData, windowSize).permute(0, 2, 1, 3)
-        print(f"DEV: sampledNegs: {sampledNegs.shape}")
 
         if self.speakerEmb is not None:
             l_ = label.view(batchSize, 1).expand(batchSize, windowSize)
@@ -316,9 +315,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         # Predictions, BS x Len x D x nPreds
         predictions = self.wPrediction(cFeature)
-        print(f"DEV: P_K: {predictions.shape}")
         nPredicts = self.nPredicts
-        print(f"DEV: P_K: {predictions.shape}, {nPredicts}")
 
         extra_preds = []
 
@@ -349,9 +346,10 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # Positive examples in the window, BS x Len x W x D
         positives = encodedData[:,1:].unfold(1, self.nMatched, 1).permute(0,1,3,2)
         # gt_and_neg = torch.cat((pred_windows, sampledData.permute(0, 2, 3, 1)), 3)
-
+        print(f"DEV: positives: {positives.shape}")
         # BS x L x NumNegs x NumPreds
         neg_log_scores = sampledNegs @ predictions / sampledNegs.size(-1)
+        print(f"DEV: neg_log_scores: {neg_log_scores.shape}")
 
         # BS x L x W x NumPreds
         pos_log_scores = positives @ predictions / sampledNegs.size(-1)
