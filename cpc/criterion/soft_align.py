@@ -315,7 +315,9 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         # Predictions, BS x Len x D x nPreds
         predictions = self.wPrediction(cFeature)
+        print(f"DEV: P_K: {predictions.shape}")
         nPredicts = self.nPredicts
+        print(f"DEV: P_K: {predictions.shape}, {nPredicts}")
 
         extra_preds = []
 
