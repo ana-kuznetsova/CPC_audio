@@ -307,6 +307,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # sampledData, labelLoss = self.sampleClean(encodedData, windowSize)
         # negatives: BS x Len x NumNegs x D
         sampledNegs = self.sampleClean(encodedData, windowSize).permute(0, 2, 1, 3)
+        print(f"DEV: sampledNegs: {sampledNegs.shape}")
 
         if self.speakerEmb is not None:
             l_ = label.view(batchSize, 1).expand(batchSize, windowSize)
