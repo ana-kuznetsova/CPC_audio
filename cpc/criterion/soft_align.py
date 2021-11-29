@@ -360,6 +360,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # log(e^x_p / (e^x_p + \sum_n e^x_n))
         # first compute \log \sum_n e^x_n
         neg_log_tot_scores = torch.logsumexp(neg_log_scores, 2, keepdim=True)
+        print(f"DEV: neg_tot_scores: {neg_log_tot_scores.shape}")
 
         # now log(e^xp / (e^x_p + e^x_n)) 
         # this can be further optimized.
