@@ -365,17 +365,16 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         # now log(e^xp / (e^x_p + e^x_n)) 
         # this can be further optimized.
-        tmp = torch.stack((pos_log_scores,
-                         neg_log_tot_scores.expand_as(pos_log_scores)), 0)
-        
-        print(f"DEV: stack: {tmp.shape}")
 
         log_scores = torch.log_softmax(
             torch.stack((pos_log_scores,
                          neg_log_tot_scores.expand_as(pos_log_scores)), 0), 
             dim=0)[0]
         
+        print(f"DEV: log_scores: {log_scores.shape}")
+        
         log_scores = log_scores.view(batchSize*windowSize, self.nMatched, nPredicts)
+        print(f"DEV: log_scores: {log_scores.shape}")
         # print('ls-stats', log_scores.mean().item(), log_scores.std().item())
         if self.masq_buffer is not None:
             masq_buffer = self.masq_buffer
