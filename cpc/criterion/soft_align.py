@@ -353,10 +353,8 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         # BS x L x W x NumPreds
         pos_log_scores = positives @ predictions / sampledNegs.size(-1)
-        print(f"DEV: pos_log_scores: {pos_log_scores.shape}")
         avg_pos_log_scores = torch.mean(pos_log_scores, -1, keepdim=True) #Average across K dim
-        print(f"DEV: avg {avg_pos_log_scores.shape}")
-        s_target = torch.mul(avg_pos_log_scores, positives)
+        s_target = torch.mean(torch.mul(avg_pos_log_scores, positives), 2)
         print(f"DEV: s_target:{s_target.shape}")
 
         # We now want ot get a matrix BS x L x W x NumPreds
