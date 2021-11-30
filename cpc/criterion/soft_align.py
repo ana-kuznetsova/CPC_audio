@@ -346,7 +346,6 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # Positive examples in the window, BS x Len x W x D
         positives = encodedData[:,1:].unfold(1, self.nMatched, 1).permute(0,1,3,2)
         # gt_and_neg = torch.cat((pred_windows, sampledData.permute(0, 2, 3, 1)), 3)
-        print(f"DEV: positives, predictions: {positives.shape}, {predictions.shape}")
         # BS x L x NumNegs x NumPreds
         neg_log_scores = sampledNegs @ predictions / sampledNegs.size(-1)
         #print(f"DEV: neg_log_scores: {neg_log_scores.shape}")
@@ -359,7 +358,6 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         s_target/=snorm
         e_noise  = torch.mean(predictions, -1) - s_target
         snr = torch.linalg.norm(s_target, dim=-1)/torch.linalg.norm(e_noise, dim=-1)
-        print(f"DEV: SNR:{snr.shape}")
 
         # We now want ot get a matrix BS x L x W x NumPreds
         # in which each entry is the log-softmax of predicting a window elem in contrast to al negs
@@ -389,7 +387,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
             log_scores = log_scores.masked_fill(masq_buffer > 0, -1000)
         losses, aligns = soft_align(log_scores / self.loss_temp, self.allowed_skips_beg, self.allowed_skips_end, not self.learn_blank)
         losses = losses * self.loss_temp
-        #print(f"DEV: losses, aligns: {losses.shape}, {aligns}")
+        print(f"DEV: losses, aligns: {losses.shape}")
 
         pos_is_selected = (pos_log_scores > neg_log_scores.max(2, keepdim=True)[0]).view(batchSize*windowSize, self.nMatched, nPredicts)
 
