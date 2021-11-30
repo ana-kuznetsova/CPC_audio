@@ -354,7 +354,8 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # BS x L x W x NumPreds
         pos_log_scores = positives @ predictions / sampledNegs.size(-1)
         print(f"DEV: pos_log_scores: {pos_log_scores.shape}")
-        avg_pos_log_scores = torch.mean(pos_log_scores, -1) #Average across K dim
+        avg_pos_log_scores = torch.mean(pos_log_scores, -1, keepdim=True) #Average across K dim
+        print(f"DEV: avg {avg_pos_log_scores.shape}")
         s_target = torch.mul(avg_pos_log_scores, positives)
         print(f"DEV: s_target:{s_target.shape}")
 
