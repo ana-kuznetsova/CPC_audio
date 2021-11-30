@@ -387,7 +387,6 @@ class CPCUnsupersivedCriterion(BaseCriterion):
             log_scores = log_scores.masked_fill(masq_buffer > 0, -1000)
         losses, aligns = soft_align(log_scores / self.loss_temp, self.allowed_skips_beg, self.allowed_skips_end, not self.learn_blank)
         losses = losses * self.loss_temp
-        print(f"DEV: losses, aligns: {losses.shape}")
 
         pos_is_selected = (pos_log_scores > neg_log_scores.max(2, keepdim=True)[0]).view(batchSize*windowSize, self.nMatched, nPredicts)
 
@@ -398,6 +397,8 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # just simulate a per-prediction loss
         outLossesD = outLosses.detach()
         losses = losses.mean() / outLossesD.sum() * outLossesD
+
+        print(f"DEV: losses, aligns: {losses.shape}")
 
         captureRes = None
         if captureOptions != None:
