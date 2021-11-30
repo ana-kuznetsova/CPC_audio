@@ -387,8 +387,9 @@ class CPCUnsupersivedCriterion(BaseCriterion):
             log_scores = log_scores.masked_fill(masq_buffer > 0, -1000)
         losses, aligns = soft_align(log_scores / self.loss_temp, self.allowed_skips_beg, self.allowed_skips_end, not self.learn_blank)
         losses = losses * self.loss_temp
-        print(f"DEV: losses {losses.shape}")
-        
+        snr = snr.view(batchSize*windowSize)
+        print(f"DEV: losses {losses.shape}, snr {snr.shape}")
+
         pos_is_selected = (pos_log_scores > neg_log_scores.max(2, keepdim=True)[0]).view(batchSize*windowSize, self.nMatched, nPredicts)
 
         # This is approximate Viterbi alignment loss and accurracy
