@@ -355,8 +355,8 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         pos_log_scores = positives @ predictions / sampledNegs.size(-1)
         avg_pos_log_scores = torch.mean(pos_log_scores, -1, keepdim=True) #Average across K dim
         s_target = torch.mean(torch.mul(avg_pos_log_scores, positives), 2)
-        avg_predictions = torch.mean(predictions, -1)
-        print(f"DEV: s_target, avg_preds:{s_target.shape}, {avg_predictions.shape}")
+        e_noise  = torch.mean(predictions, -1) - s_target
+        print(f"DEV: enoise:{e_noise.shape}")
 
         # We now want ot get a matrix BS x L x W x NumPreds
         # in which each entry is the log-softmax of predicting a window elem in contrast to al negs
