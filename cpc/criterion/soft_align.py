@@ -346,10 +346,10 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # Positive examples in the window, BS x Len x W x D
         positives = encodedData[:,1:].unfold(1, self.nMatched, 1).permute(0,1,3,2)
         # gt_and_neg = torch.cat((pred_windows, sampledData.permute(0, 2, 3, 1)), 3)
-        print(f"DEV: positives: {positives.shape}")
+        print(f"DEV: positives, predictions: {positives.shape}, {predictions.shape}")
         # BS x L x NumNegs x NumPreds
         neg_log_scores = sampledNegs @ predictions / sampledNegs.size(-1)
-        print(f"DEV: neg_log_scores: {neg_log_scores.shape}")
+        #print(f"DEV: neg_log_scores: {neg_log_scores.shape}")
 
         # BS x L x W x NumPreds
         pos_log_scores = positives @ predictions / sampledNegs.size(-1)
@@ -361,7 +361,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # log(e^x_p / (e^x_p + \sum_n e^x_n))
         # first compute \log \sum_n e^x_n
         neg_log_tot_scores = torch.logsumexp(neg_log_scores, 2, keepdim=True)
-        print(f"DEV: neg_tot_scores: {neg_log_tot_scores.shape}")
+        #print(f"DEV: neg_tot_scores: {neg_log_tot_scores.shape}")
 
         # now log(e^xp / (e^x_p + e^x_n)) 
         # this can be further optimized.
@@ -371,10 +371,10 @@ class CPCUnsupersivedCriterion(BaseCriterion):
                          neg_log_tot_scores.expand_as(pos_log_scores)), 0), 
             dim=0)[0]
         
-        print(f"DEV: log_scores: {log_scores.shape}")
+        #print(f"DEV: log_scores: {log_scores.shape}")
         
         log_scores = log_scores.view(batchSize*windowSize, self.nMatched, nPredicts)
-        print(f"DEV: log_scores: {log_scores.shape}")
+        #print(f"DEV: log_scores: {log_scores.shape}")
         # print('ls-stats', log_scores.mean().item(), log_scores.std().item())
         if self.masq_buffer is not None:
             masq_buffer = self.masq_buffer
@@ -383,7 +383,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
             log_scores = log_scores.masked_fill(masq_buffer > 0, -1000)
         losses, aligns = soft_align(log_scores / self.loss_temp, self.allowed_skips_beg, self.allowed_skips_end, not self.learn_blank)
         losses = losses * self.loss_temp
-        print(f"DEV: losses, aligns: {losses.shape}, {aligns}")
+        #print(f"DEV: losses, aligns: {losses.shape}, {aligns}")
 
         pos_is_selected = (pos_log_scores > neg_log_scores.max(2, keepdim=True)[0]).view(batchSize*windowSize, self.nMatched, nPredicts)
 
