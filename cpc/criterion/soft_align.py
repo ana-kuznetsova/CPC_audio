@@ -388,7 +388,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         losses, aligns = soft_align(log_scores / self.loss_temp, self.allowed_skips_beg, self.allowed_skips_end, not self.learn_blank)
         losses = losses * self.loss_temp
         snr = snr.view(batchSize*windowSize)
-        print(f"DEBUG: Losses, SNR: {losses[:5]}, {snr[:5]}")
+        #print(f"DEBUG: Losses, SNR: {losses[:5]}, {snr[:5]}")
         losses = losses + snr
 
         pos_is_selected = (pos_log_scores > neg_log_scores.max(2, keepdim=True)[0]).view(batchSize*windowSize, self.nMatched, nPredicts)
