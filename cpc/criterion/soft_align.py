@@ -390,7 +390,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         losses = losses * self.loss_temp
         snr = snr.view(batchSize*windowSize)
         #print(f"DEBUG: Losses, SNR: {losses[:5]}, {snr[:5]}")
-        losses = losses + snr
+        losses = losses - snr
 
         pos_is_selected = (pos_log_scores > neg_log_scores.max(2, keepdim=True)[0]).view(batchSize*windowSize, self.nMatched, nPredicts)
 
