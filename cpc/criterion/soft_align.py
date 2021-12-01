@@ -355,7 +355,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         avg_pos_log_scores = torch.mean(pos_log_scores, -1, keepdim=True) #Average across K dim
         s_target = torch.mean(torch.mul(avg_pos_log_scores, positives), 2)
         snorm = torch.linalg.norm(s_target, dim=2, keepdim=True)
-        s_target/=snorm
+        s_target = s_target/snorm
         e_noise  = torch.mean(predictions, -1) - s_target
         snr = torch.linalg.norm(s_target, dim=-1)/torch.linalg.norm(e_noise, dim=-1)
         snr = 10*torch.log10(snr)
