@@ -349,7 +349,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         print(f"DEV: positives: {positives.shape}")
         # BS x L x NumNegs x NumPreds
         neg_log_scores = sampledNegs @ predictions / sampledNegs.size(-1)
-        print(f"DEV: neg_log_scores: {neg_log_scores.shape}")
+        #print(f"DEV: neg_log_scores: {neg_log_scores.shape}")
 
         # BS x L x W x NumPreds
         pos_log_scores = positives @ predictions / sampledNegs.size(-1)
