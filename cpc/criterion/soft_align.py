@@ -361,6 +361,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
                 for i in range(12):
                     for j in range(8):
                         pos = positives[b][l][i]
+                        print(f"DEBUG: pos {pos.shape}")
                         pred = torch.transpose(pred_tmp[b][l][j], 0, 1)
                         coeff = torch.dot(pos, pred)
                         print(f"DEBUG: Coeff: {coeff}")                
