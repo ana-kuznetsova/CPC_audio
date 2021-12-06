@@ -394,7 +394,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         #!!!!!! ADD SNR TERM !!!!!!
         log_scores = log_scores - snr
-        print(f"DEV: log_scores: {log_scores}")
+    
         # print('ls-stats', log_scores.mean().item(), log_scores.std().item())
         if self.masq_buffer is not None:
             masq_buffer = self.masq_buffer
