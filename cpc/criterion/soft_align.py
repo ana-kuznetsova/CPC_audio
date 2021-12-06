@@ -368,8 +368,9 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         predictions = torch.transpose(predictions, 2, 3)
         predictions = predictions.repeat(1, 1, self.nMatched, 1)
+        e_noise =  predictions - s_target
 
-        print(f"DEBUG: preds {predictions.shape}")
+        print(f"DEBUG: e noise {e_noise.shape}")
         #s_target = s_target.view(batchSize, windowSize, self.nMatched, nPredicts)     
         
         # We now want ot get a matrix BS x L x W x NumPreds
