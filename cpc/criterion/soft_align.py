@@ -391,7 +391,10 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         #print(f"DEV: log_scores: {log_scores.shape}")
         
         log_scores = log_scores.view(batchSize*windowSize, self.nMatched, nPredicts)
-        #print(f"DEV: log_scores: {log_scores}")
+
+        #!!!!!! ADD SNR TERM !!!!!!
+        log_scores = log_scores - snr
+        print(f"DEV: log_scores: {log_scores}")
         # print('ls-stats', log_scores.mean().item(), log_scores.std().item())
         if self.masq_buffer is not None:
             masq_buffer = self.masq_buffer
@@ -400,7 +403,6 @@ class CPCUnsupersivedCriterion(BaseCriterion):
             log_scores = log_scores.masked_fill(masq_buffer > 0, -1000)
         losses, aligns = soft_align(log_scores / self.loss_temp, self.allowed_skips_beg, self.allowed_skips_end, not self.learn_blank)
         losses = losses * self.loss_temp
-        print(f"LOSSES: {losses}")
         pos_is_selected = (pos_log_scores > neg_log_scores.max(2, keepdim=True)[0]).view(batchSize*windowSize, self.nMatched, nPredicts)
 
         # This is approximate Viterbi alignment loss and accurracy
