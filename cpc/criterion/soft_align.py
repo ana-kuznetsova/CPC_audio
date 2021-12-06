@@ -359,9 +359,9 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         repeat_pos = positives.repeat(1, 1, pos_log_scores.shape[-1], 1)
         s_target = torch.mul(coeff_mat.unsqueeze(-1), repeat_pos)
         s_target_norm = torch.linalg.norm(s_target, dim=-1)
-        print(f"DEBUG: s target {s_target.shape}, norm {s_target_norm.shape}")
         s_target = s_target/s_target_norm.unsqueeze(-1)
         del s_target_norm
+        print(f"DEBUG: preds {predictions.shape}")
         #s_target = s_target.view(batchSize, windowSize, self.nMatched, nPredicts)     
         
         # We now want ot get a matrix BS x L x W x NumPreds
