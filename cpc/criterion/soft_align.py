@@ -370,8 +370,8 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         e_noise =  predictions - s_target
         e_noise_norm = torch.linalg.norm(e_noise, dim=-1)
         snr = s_target_norm/e_noise_norm
-        snr = 10*torch.log10(snr.view(batchSize*windowSize, self.nMatched, nPredicts))   
-
+        snr = torch.log10(snr.view(batchSize*windowSize, self.nMatched, nPredicts))   
+        print(f"DEV snr {snr}")
         # We now want ot get a matrix BS x L x W x NumPreds
         # in which each entry is the log-softmax of predicting a window elem in contrast to al negs
 
