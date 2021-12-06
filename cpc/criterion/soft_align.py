@@ -362,7 +362,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
                     for j in range(8):
                         pos = positives[b][l][i]
                         pred = torch.transpose(pred_tmp[b][l][j], 0, 1)
-                        coeff = torch.dot(pos, pred
+                        coeff = torch.dot(pos, pred)
                         print(f"DEBUG: Coeff: {coeff}")                
         
         # We now want ot get a matrix BS x L x W x NumPreds
