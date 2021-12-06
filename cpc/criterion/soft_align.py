@@ -357,10 +357,17 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         print(f"DEBUG: pos_log {pos_log_scores.shape}, positives {positives.shape}")
         coeff_mat = torch.flatten(pos_log_scores, start_dim=2)
         repeat_pos = positives.repeat(1, 1, pos_log_scores.shape[-1], 1)
+
+        #Calculate target and target_norm
         s_target = torch.mul(coeff_mat.unsqueeze(-1), repeat_pos)
         s_target_norm = torch.linalg.norm(s_target, dim=-1)
         s_target = s_target/s_target_norm.unsqueeze(-1)
-        del s_target_norm
+        s_target_norm = torch.inalg.norm(s_target, dim=2)
+        
+        #Calculate noise estimate
+
+        predictions = torch.transpose(predictions, 2, 3)
+
         print(f"DEBUG: preds {predictions.shape}")
         #s_target = s_target.view(batchSize, windowSize, self.nMatched, nPredicts)     
         
