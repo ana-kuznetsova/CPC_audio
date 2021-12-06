@@ -370,9 +370,8 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         e_noise =  predictions - s_target
         e_noise_norm = torch.linalg.norm(e_noise, dim=-1)
         snr = s_target_norm/e_noise_norm
-        snr = 10*torch.log10(snr.view(batchSize*windowSize, self.nMatched, nPredicts))
-        print(f"SNR {snr}")    
-        
+        snr = 10*torch.log10(snr.view(batchSize*windowSize, self.nMatched, nPredicts))   
+
         # We now want ot get a matrix BS x L x W x NumPreds
         # in which each entry is the log-softmax of predicting a window elem in contrast to al negs
 
@@ -392,7 +391,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         #print(f"DEV: log_scores: {log_scores.shape}")
         
         log_scores = log_scores.view(batchSize*windowSize, self.nMatched, nPredicts)
-        #print(f"DEV: log_scores: {log_scores.shape}")
+        print(f"DEV: log_scores: {log_scores}")
         # print('ls-stats', log_scores.mean().item(), log_scores.std().item())
         if self.masq_buffer is not None:
             masq_buffer = self.masq_buffer
@@ -401,8 +400,6 @@ class CPCUnsupersivedCriterion(BaseCriterion):
             log_scores = log_scores.masked_fill(masq_buffer > 0, -1000)
         losses, aligns = soft_align(log_scores / self.loss_temp, self.allowed_skips_beg, self.allowed_skips_end, not self.learn_blank)
         losses = losses * self.loss_temp
-        #print(f"DEBUG: Losses, SNR: {losses[:5]}, {snr[:5]}")
-        losses = losses
 
         pos_is_selected = (pos_log_scores > neg_log_scores.max(2, keepdim=True)[0]).view(batchSize*windowSize, self.nMatched, nPredicts)
 
