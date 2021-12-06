@@ -360,7 +360,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         s_target = torch.mul(coeff_mat.unsqueeze(-1), repeat_pos)
         s_target_norm = torch.linalg.norm(s_target, dim=-1)
         print(f"DEBUG: s target {s_target.shape}, norm {s_target_norm.shape}")
-        s_target = s_target/s_target_norm
+        s_target = s_target/s_target_norm.unsqueeze(-1)
         del s_target_norm
         #s_target = s_target.view(batchSize, windowSize, self.nMatched, nPredicts)     
         
