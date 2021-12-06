@@ -391,7 +391,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         #print(f"DEV: log_scores: {log_scores.shape}")
         
         log_scores = log_scores.view(batchSize*windowSize, self.nMatched, nPredicts)
-        print(f"DEV: log_scores: {log_scores}")
+        #print(f"DEV: log_scores: {log_scores}")
         # print('ls-stats', log_scores.mean().item(), log_scores.std().item())
         if self.masq_buffer is not None:
             masq_buffer = self.masq_buffer
