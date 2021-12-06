@@ -367,6 +367,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         #Calculate noise estimate
 
         predictions = torch.transpose(predictions, 2, 3)
+        predictions = predictions.repeat(1, 1, self.nMatched, 1)
 
         print(f"DEBUG: preds {predictions.shape}")
         #s_target = s_target.view(batchSize, windowSize, self.nMatched, nPredicts)     
