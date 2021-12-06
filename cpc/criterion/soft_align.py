@@ -362,7 +362,6 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         s_target = torch.mul(coeff_mat.unsqueeze(-1), repeat_pos)
         s_target_norm = torch.linalg.norm(s_target, dim=-1)
         s_target = s_target/s_target_norm.unsqueeze(-1)
-        s_target_norm = torch.linalg.norm(s_target, dim=2)
         
         #Calculate noise estimate
 
