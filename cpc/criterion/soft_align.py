@@ -365,6 +365,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         print(f"DEBUG starget {s_target.shape}")
         
         repeat_preds = predictions.unsqueeze(-1)
+        repeat_preds = torch.tile(repeat_preds, (1, 1, 1, 1, 12))
         print(f"DEBUG: preds rep {repeat_preds.shape}")
         #Calculate noise estimate
 
