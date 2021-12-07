@@ -362,7 +362,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         s_target_norm = torch.linalg.norm(s_target, dim=-1)
         s_target = s_target/s_target_norm.unsqueeze(-1)
         print(f"DEBUG starget {s_target.shape}")
-        s_target = s_target.view(batchSize, windowSize, self.nMatched, nPredicts, s_target.size[-1])
+        s_target = s_target.view(batchSize, windowSize, self.nMatched, nPredicts, s_target.shape[-1])
         print(f"DEBUG starget {s_target.shape}")
         
         #Calculate noise estimate
