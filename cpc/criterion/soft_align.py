@@ -364,7 +364,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         s_target = s_target.view(batchSize, windowSize, nPredicts, self.nMatched, s_target.shape[-1])
 
         repeat_preds = predictions.repeat(1, 1, 1, self.nMatched)
-        print(f"DEBUG: preds rep {repeat_preds}")
+        print(f"DEBUG: preds rep {repeat_preds.shape}")
         #Calculate noise estimate
 
         '''
