@@ -361,10 +361,10 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         s_target = torch.mul(coeff_mat.unsqueeze(-1), repeat_pos)
         s_target_norm = torch.linalg.norm(s_target, dim=-1)
         s_target = s_target/s_target_norm.unsqueeze(-1)
-        s_target = s_target.view(batchSize, windowSize, nPredicts, self.nMatched, nPredicts)
+        s_target = s_target.view(batchSize, windowSize, nPredicts, self.nMatched)
 
         repeat_preds = predictions.repeat(1, 1, 1, self.nMatched)
-        repeat_preds = repeat_preds.view(batchSize, windowSize, nPredicts, self.nMatched, nPredicts)
+        repeat_preds = repeat_preds.view(batchSize, windowSize, nPredicts, self.nMatched)
         print(f"DEBUG: preds rep {repeat_preds.shape}, target {s_target.shape}")
         #Calculate noise estimate
 
