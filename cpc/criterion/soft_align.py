@@ -389,9 +389,10 @@ class CPCUnsupersivedCriterion(BaseCriterion):
             dim=0)[0]
         
         log_scores = log_scores.view(batchSize*windowSize, self.nMatched, nPredicts)
-        snr = snr.view(batchSize*windowSize, self.nMatched, nPredicts)
+        snr = torch.log10(snr.view(batchSize*windowSize, self.nMatched, nPredicts))
 
-        print(f"DEV log scores, snr {log_scores.shape}, {snr.shape}")
+        tmp = torch.mean(torch.flatten(snr))
+        print(f"DEV Running SNR: {tmp}")
         #!!!!!! ADD SNR TERM !!!!!!
         log_scores = log_scores - snr
     
