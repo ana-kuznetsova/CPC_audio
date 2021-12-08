@@ -353,6 +353,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # BS x L x W x NumPreds
         pos_log_scores = positives @ predictions / sampledNegs.size(-1)
         avg_pos_log_scores = torch.mean(pos_log_scores, -1, keepdim=True) #Average across K dim
+<<<<<<< HEAD
         
         
 
@@ -360,6 +361,27 @@ class CPCUnsupersivedCriterion(BaseCriterion):
             for j in range(positives.shape[2]):
 
         
+=======
+
+        coeff_mat = torch.flatten(pos_log_scores, start_dim=2)
+        repeat_pos = positives.repeat(1, 1, pos_log_scores.shape[-1], 1)
+
+        #Calculate target and target_norm
+        s_target = torch.mul(coeff_mat.unsqueeze(-1), repeat_pos)
+        s_target_norm = torch.linalg.norm(s_target, dim=-1)
+        s_target = s_target/s_target_norm.unsqueeze(-1)
+        s_target = s_target.view(batchSize, windowSize, nPredicts, self.nMatched, s_target.shape[-1])
+
+        #Calculate noise estimate
+        repeat_preds = predictions.repeat(1, 1, 1, self.nMatched)
+        repeat_preds = repeat_preds.view(batchSize, windowSize, nPredicts, self.nMatched, predictions.shape[2])
+        e_noise = repeat_preds - s_target
+
+        s_target_norm = torch.linalg.norm(s_target, dim=-1)
+        e_noise_norm = torch.linalg.norm(e_noise, dim=-1)
+        snr = s_target_norm/e_noise_norm
+
+>>>>>>> 7f3f23aa5707c2246ed274a3ede321318a56c4bb
         # We now want ot get a matrix BS x L x W x NumPreds
         # in which each entry is the log-softmax of predicting a window elem in contrast to al negs
 
@@ -376,10 +398,14 @@ class CPCUnsupersivedCriterion(BaseCriterion):
                          neg_log_tot_scores.expand_as(pos_log_scores)), 0), 
             dim=0)[0]
         
-        #print(f"DEV: log_scores: {log_scores.shape}")
-        
         log_scores = log_scores.view(batchSize*windowSize, self.nMatched, nPredicts)
-        #print(f"DEV: log_scores: {log_scores.shape}")
+        snr = 10*torch.log10(snr.view(batchSize*windowSize, self.nMatched, nPredicts))
+
+        tmp = torch.mean(torch.flatten(snr))
+        print(f"DEV Running SNR: {tmp}")
+        #!!!!!! ADD SNR TERM !!!!!!
+        log_scores = log_scores - snr
+    
         # print('ls-stats', log_scores.mean().item(), log_scores.std().item())
         if self.masq_buffer is not None:
             masq_buffer = self.masq_buffer
@@ -388,9 +414,6 @@ class CPCUnsupersivedCriterion(BaseCriterion):
             log_scores = log_scores.masked_fill(masq_buffer > 0, -1000)
         losses, aligns = soft_align(log_scores / self.loss_temp, self.allowed_skips_beg, self.allowed_skips_end, not self.learn_blank)
         losses = losses * self.loss_temp
-        #print(f"DEBUG: Losses, SNR: {losses[:5]}, {snr[:5]}")
-        losses = losses
-
         pos_is_selected = (pos_log_scores > neg_log_scores.max(2, keepdim=True)[0]).view(batchSize*windowSize, self.nMatched, nPredicts)
 
         # This is approximate Viterbi alignment loss and accurracy
