@@ -352,6 +352,10 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         # BS x L x W x NumPreds
         pos_log_scores = positives @ predictions / sampledNegs.size(-1)
+
+        nan1 = torch.sum(torch.isnan(positives))
+        nan2 = torch.sum(torch.isnan(predictions))
+        print(f"DEBUG: ISNAN Encoder: {nan1}, Context: {nan2}")
         avg_pos_log_scores = torch.mean(pos_log_scores, -1, keepdim=True) #Average across K dim
 
         coeff_mat = torch.flatten(pos_log_scores, start_dim=2)
@@ -370,9 +374,9 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         s_target_norm = torch.linalg.norm(s_target, dim=-1)
         e_noise_norm = torch.linalg.norm(e_noise, dim=-1)
-        nan1 = torch.sum(torch.isnan(s_target_norm))
-        nan2 = torch.sum(torch.isnan(e_noise_norm))
-        print(f"DEBUG: ISNAN {nan1}, {nan2}")
+        #nan1 = torch.sum(torch.isnan(s_target_norm))
+        #nan2 = torch.sum(torch.isnan(e_noise_norm))
+        #print(f"DEBUG: ISNAN {nan1}, {nan2}")
         snr = s_target_norm/e_noise_norm
 
         # We now want ot get a matrix BS x L x W x NumPreds
