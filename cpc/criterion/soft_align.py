@@ -352,6 +352,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         # BS x L x W x NumPreds
         pos_log_scores = positives @ predictions / sampledNegs.size(-1)
+        print(f"DEBUG: positives: {torch.sum(torch.isnan(positives))}, preds {torch.sum(torch.isnan(predictions))}")
 
         avg_pos_log_scores = torch.mean(pos_log_scores, -1, keepdim=True) #Average across K dim
 
