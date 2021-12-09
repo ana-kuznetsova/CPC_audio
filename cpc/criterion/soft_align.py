@@ -360,7 +360,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         #Calculate target and target_norm
         s_target = torch.mul(coeff_mat.unsqueeze(-1), repeat_pos)
-        s_target_norm = torch.linalg.norm(s_target, dim=-1) + 1e-16
+        s_target_norm = torch.linalg.norm(s_target, dim=-1) + 1e-8
         nan1 = torch.sum(torch.isnan(s_target))
         nan2 = torch.sum(torch.flatten(s_target_norm)==0)
         print(f"DEBUG: ISNAN target {nan1}, target_norm zero: {nan2}, target norm sum {torch.sum(s_target_norm)}")
