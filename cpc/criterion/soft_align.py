@@ -375,8 +375,8 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         e_noise = repeat_preds - s_target
         print(f"DEBUG e_noise: {torch.sum(torch.isnan(e_noise))} ")
 
-        s_target_norm = torch.linalg.norm(s_target, dim=-1)
-        e_noise_norm = torch.linalg.norm(e_noise, dim=-1)
+        s_target_norm = torch.linalg.norm(s_target, dim=-1) + 1e-8
+        e_noise_norm = torch.linalg.norm(e_noise, dim=-1) + 1e-8
         nan1 = torch.sum((s_target_norm==0))
         nan2 = torch.sum(torch.isnan(e_noise_norm))
         print(f"DEBUG: NAN enoise norm {nan2}, ZERO starget norm {nan1}")
