@@ -363,14 +363,16 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         s_target_norm = torch.linalg.norm(s_target, dim=-1)
         nan1 = torch.sum(torch.isnan(s_target))
         nan2 = torch.sum(s_target_norm==0)
-        print(f"DEBUG: ISNAN target_norm zero: {nan2}, target norm sum {torch.sum(s_target_norm)}")
+        print(f"DEBUG: ISNAN target {nan1}, target_norm zero: {nan2}, target norm sum {torch.sum(s_target_norm)}")
         s_target = s_target/s_target_norm.unsqueeze(-1)
+        print(f"DEBUG: NAN s_target: {torch.sum(torch.isnan(s_target))}")
         s_target = s_target.view(batchSize, windowSize, nPredicts, self.nMatched, s_target.shape[-1])
 
         #Calculate noise estimate
         repeat_preds = predictions.repeat(1, 1, 1, self.nMatched)
         repeat_preds = repeat_preds.view(batchSize, windowSize, nPredicts, self.nMatched, predictions.shape[2])
         e_noise = repeat_preds - s_target
+        print(f"DEBUG e_noise: {torch.sum(torch.isnan(e_noise))} ")
 
         s_target_norm = torch.linalg.norm(s_target, dim=-1)
         e_noise_norm = torch.linalg.norm(e_noise, dim=-1)
