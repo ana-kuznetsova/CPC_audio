@@ -352,6 +352,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         # BS x L x W x NumPreds
         pos_log_scores = positives @ predictions / sampledNegs.size(-1)
+
         avg_pos_log_scores = torch.mean(pos_log_scores, -1, keepdim=True) #Average across K dim
 
         coeff_mat = torch.flatten(pos_log_scores, start_dim=2)
@@ -360,6 +361,9 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         #Calculate target and target_norm
         s_target = torch.mul(coeff_mat.unsqueeze(-1), repeat_pos)
         s_target_norm = torch.linalg.norm(s_target, dim=-1)
+        nan1 = torch.sum(torch.isnan(s_target))
+        nan2 = torch.sum(s_target_norm==0)
+        print(f"DEBUG: ISNAN target_norm zero: {nan2}, target norm sum {torch.sum(s_target_norm)}")
         s_target = s_target/s_target_norm.unsqueeze(-1)
         s_target = s_target.view(batchSize, windowSize, nPredicts, self.nMatched, s_target.shape[-1])
 
@@ -370,6 +374,9 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         s_target_norm = torch.linalg.norm(s_target, dim=-1)
         e_noise_norm = torch.linalg.norm(e_noise, dim=-1)
+        #nan1 = torch.sum(torch.isnan(s_target_norm))
+        #nan2 = torch.sum(torch.isnan(e_noise_norm))
+        #print(f"DEBUG: ISNAN {nan1}, {nan2}")
         snr = s_target_norm/e_noise_norm
         
         print(f"Check for Nans:")
