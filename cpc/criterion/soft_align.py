@@ -378,8 +378,8 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         s_target_norm = torch.linalg.norm(s_target, dim=-1)
         e_noise_norm = torch.linalg.norm(e_noise, dim=-1)
         nan1 = torch.sum(torch.isnan(s_target_norm))
-        nan2 = torch.sum(torch.isnan(e_noise_norm))
-        print(f"DEBUG: ISNAN enoise norm {nan2}, starget norm {nan1}")
+        nan2 = torch.sum((e_noise_norm==0))
+        print(f"DEBUG: ZEROS enoise norm {nan2}, NAN starget norm {nan1}")
         snr = s_target_norm/e_noise_norm
         
         # We now want ot get a matrix BS x L x W x NumPreds
