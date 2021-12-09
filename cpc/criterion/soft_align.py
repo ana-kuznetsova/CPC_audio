@@ -352,8 +352,6 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         # BS x L x W x NumPreds
         pos_log_scores = positives @ predictions / sampledNegs.size(-1)
-        print(f"DEBUG: positives: {torch.sum(torch.isnan(positives))}, preds {torch.sum(torch.isnan(predictions))}")
-
         avg_pos_log_scores = torch.mean(pos_log_scores, -1, keepdim=True) #Average across K dim
 
         coeff_mat = torch.flatten(pos_log_scores, start_dim=2)
@@ -362,26 +360,17 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         #Calculate target and target_norm
         s_target = torch.mul(coeff_mat.unsqueeze(-1), repeat_pos)
         s_target_norm = torch.linalg.norm(s_target, dim=-1) + 1e-16
-        nan1 = torch.sum(torch.isnan(s_target))
-        nan2 = torch.sum(torch.flatten(s_target_norm)==0)
-        print(f"DEBUG: ISNAN target {nan1}, target_norm zero: {nan2}, target norm sum {torch.sum(s_target_norm)}")
         s_target = s_target/s_target_norm.unsqueeze(-1)
-        print(f"DEBUG: NAN s_target: {torch.sum(torch.isnan(s_target))}")
         s_target = s_target.view(batchSize, windowSize, nPredicts, self.nMatched, s_target.shape[-1])
 
         #Calculate noise estimate
         repeat_preds = predictions.repeat(1, 1, 1, self.nMatched)
         repeat_preds = repeat_preds.view(batchSize, windowSize, nPredicts, self.nMatched, predictions.shape[2])
         e_noise = repeat_preds - s_target
-        print(f"DEBUG e_noise: {torch.sum(torch.isnan(e_noise))} ")
 
         s_target_norm = torch.linalg.norm(s_target, dim=-1) + 1e-16
         e_noise_norm = torch.linalg.norm(e_noise, dim=-1) + 1e-16
-        nan1 = torch.sum((s_target_norm==0))
-        nan2 = torch.sum(torch.isnan(e_noise_norm))
-        print(f"DEBUG: NAN enoise norm {nan2}, ZERO starget norm {nan1}")
         snr = s_target_norm/e_noise_norm
-        print(f"DEBUG SNR: {torch.mean(torch.flatten(snr))}")
         
         # We now want ot get a matrix BS x L x W x NumPreds
         # in which each entry is the log-softmax of predicting a window elem in contrast to al negs
@@ -403,7 +392,6 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         snr = 10*torch.log10(snr.view(batchSize*windowSize, self.nMatched, nPredicts))
 
         tmp = torch.mean(torch.flatten(snr))
-        print(f"DEV Running LOG SNR: {tmp}")
         #!!!!!! ADD SNR TERM !!!!!!
         log_scores = log_scores - snr
     
