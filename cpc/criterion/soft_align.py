@@ -414,7 +414,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # just simulate a per-prediction loss
         outLossesD = outLosses.detach()
         losses = losses.mean() / outLossesD.sum() * outLossesD
-        #print(f"AVG Loss: {torch.flatten(losses).mean()}, AVG SNR: {torch.flatten(snr).mean()}")
+        print(f"AVG Loss: {torch.flatten(losses).mean()}, AVG SNR: {torch.flatten(snr).mean()}")
 
         captureRes = None
         if captureOptions != None:
