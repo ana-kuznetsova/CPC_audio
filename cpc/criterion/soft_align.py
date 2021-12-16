@@ -355,7 +355,9 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         avg_pos_log_scores = torch.mean(pos_log_scores, -1, keepdim=True) #Average across K dim
 
         coeff_mat = torch.flatten(pos_log_scores, start_dim=2)
+        print(f"Coeff_mat {torch.sum(coeff_mat==0)}")
         repeat_pos = positives.repeat(1, 1, pos_log_scores.shape[-1], 1)
+        print(f"Pos: {torch.sum(positives==0)}, repeat_pos: {torch.sum(repeat_pos==0)}")
 
         #Calculate target and target_norm
         s_target = torch.mul(coeff_mat.unsqueeze(-1), repeat_pos)
@@ -367,7 +369,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         repeat_preds = predictions.repeat(1, 1, 1, self.nMatched)
         repeat_preds = repeat_preds.view(batchSize, windowSize, nPredicts, self.nMatched, predictions.shape[2])
         e_noise = repeat_preds - s_target
-        print(s_target[0][0][0])
+        #print(s_target[0][0][0])
         #print(f"ZEROS s_target {torch.sum(s_target == 0)}, e_noise: {torch.sum(e_noise == 0)}")
 
         s_target_norm = torch.linalg.norm(s_target, dim=-1) + 1e-16
