@@ -367,6 +367,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         repeat_preds = predictions.repeat(1, 1, 1, self.nMatched)
         repeat_preds = repeat_preds.view(batchSize, windowSize, nPredicts, self.nMatched, predictions.shape[2])
         e_noise = repeat_preds - s_target
+        print(f"ZEROS s_target {torch.sum((s_target == 0).nonzero())}, e_noise: {torch.sum((e_noise == 0).nonzero())}")
 
         s_target_norm = torch.linalg.norm(s_target, dim=-1) + 1e-16
         e_noise_norm = torch.linalg.norm(e_noise, dim=-1) + 1e-16
@@ -383,7 +384,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # now log(e^xp / (e^x_p + e^x_n)) 
         # this can be further optimized.
 
-        log_scores = torch.softmax(
+        log_scores = torch.log_softmax(
             torch.stack((pos_log_scores,
                          neg_log_tot_scores.expand_as(pos_log_scores)), 0), 
             dim=0)[0]
@@ -414,7 +415,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # just simulate a per-prediction loss
         outLossesD = outLosses.detach()
         losses = losses.mean() / outLossesD.sum() * outLossesD
-        print(f"AVG Loss: {torch.flatten(losses).mean()}, AVG SNR: {torch.flatten(snr).mean()}")
+        #print(f"AVG Loss: {torch.flatten(losses).mean()}, AVG SNR: {torch.flatten(snr).mean()}")
 
         captureRes = None
         if captureOptions != None:
