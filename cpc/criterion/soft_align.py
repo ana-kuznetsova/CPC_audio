@@ -383,7 +383,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # now log(e^xp / (e^x_p + e^x_n)) 
         # this can be further optimized.
 
-        log_scores = torch.log_softmax(
+        log_scores = torch.softmax(
             torch.stack((pos_log_scores,
                          neg_log_tot_scores.expand_as(pos_log_scores)), 0), 
             dim=0)[0]
@@ -393,9 +393,9 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         tmp = torch.mean(torch.flatten(snr))
         #!!!!!! ADD SNR TERM !!!!!!
-        print(f"LOG scores: {torch.flatten(log_scores).mean()}, SNR: {torch.flatten(snr).mean()}")
+        #print(f"LOG scores: {torch.flatten(log_scores).mean()}, SNR: {torch.flatten(snr).mean()}")
         log_scores = log_scores - snr
-        print(f"LOG scores: {torch.flatten(log_scores).mean()}")
+        #print(f"LOG scores: {torch.flatten(log_scores).mean()}")
         
         # print('ls-stats', log_scores.mean().item(), log_scores.std().item())
         if self.masq_buffer is not None:
@@ -414,7 +414,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         # just simulate a per-prediction loss
         outLossesD = outLosses.detach()
         losses = losses.mean() / outLossesD.sum() * outLossesD
-        print(f"AVG Loss: {torch.flatten(losses).mean()}, AVG SNR: {torch.flatten(snr).mean()}")
+        #print(f"AVG Loss: {torch.flatten(losses).mean()}, AVG SNR: {torch.flatten(snr).mean()}")
 
         captureRes = None
         if captureOptions != None:
