@@ -393,8 +393,10 @@ class CPCUnsupersivedCriterion(BaseCriterion):
 
         tmp = torch.mean(torch.flatten(snr))
         #!!!!!! ADD SNR TERM !!!!!!
-        log_scores = log_scores - snr
         print(f"LOG scores: {torch.flatten(log_scores).mean()}, SNR: {torch.flatten(snr).mean()}")
+        log_scores = log_scores - snr
+        print(f"LOG scores: {torch.flatten(log_scores).mean()}")
+        
         # print('ls-stats', log_scores.mean().item(), log_scores.std().item())
         if self.masq_buffer is not None:
             masq_buffer = self.masq_buffer
