@@ -367,7 +367,7 @@ class CPCUnsupersivedCriterion(BaseCriterion):
         repeat_preds = predictions.repeat(1, 1, 1, self.nMatched)
         repeat_preds = repeat_preds.view(batchSize, windowSize, nPredicts, self.nMatched, predictions.shape[2])
         e_noise = repeat_preds - s_target
-        print(f"ZEROS s_target {torch.sum((s_target == 0).nonzero())}, e_noise: {torch.sum((e_noise == 0).nonzero())}")
+        print(f"ZEROS s_target {torch.sum(s_target == 0)}, e_noise: {torch.sum(e_noise == 0)}")
 
         s_target_norm = torch.linalg.norm(s_target, dim=-1) + 1e-16
         e_noise_norm = torch.linalg.norm(e_noise, dim=-1) + 1e-16
